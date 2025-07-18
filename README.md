@@ -43,6 +43,7 @@ Use the [setup-catalyst](https://github.com/PraveenGongada/setup-catalyst) actio
   uses: PraveenGongada/setup-catalyst@v1
   with:
     version: 'latest' # or specify a version like 'v1.0.0'
+```
 
 ### Homebrew
 
