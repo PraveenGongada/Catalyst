@@ -57,6 +57,12 @@ func main() {
 		"Output format for extracted matrices (json|yaml)",
 	)
 
+	appsFilter := flag.String(
+		"apps",
+		"",
+		"Comma-separated list of app names to filter (e.g., App1,App2). If empty, all apps are included",
+	)
+
 	flag.Parse()
 
 	if *versionFlag {
@@ -65,7 +71,7 @@ func main() {
 	}
 
 	if *extractWorkflow != "" {
-		if err := handleExtractCommand(*configPath, *extractWorkflow, *outputFormat); err != nil {
+		if err := handleExtractCommand(*configPath, *extractWorkflow, *outputFormat, *appsFilter); err != nil {
 			fmt.Fprintf(os.Stderr, "Error extracting matrices: %v\n", err)
 			os.Exit(1)
 		}
@@ -78,7 +84,7 @@ func main() {
 	}
 }
 
-func handleExtractCommand(configPath, workflowKey, format string) error {
+func handleExtractCommand(configPath, workflowKey, format, appsFilter string) error {
 	cfg, err := config.Load(configPath)
 	if err != nil {
 		return fmt.Errorf("error loading configuration: %w", err)
@@ -97,7 +103,7 @@ func handleExtractCommand(configPath, workflowKey, format string) error {
 			workflowKey, getAvailableWorkflows(cfg))
 	}
 
-	extractedMatrices, err := extractor.ExtractWorkflowMatrices(cfg, workflowKey)
+	extractedMatrices, err := extractor.ExtractWorkflowMatrices(cfg, workflowKey, appsFilter)
 	if err != nil {
 		return fmt.Errorf("error extracting matrices: %w", err)
 	}

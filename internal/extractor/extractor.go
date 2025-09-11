@@ -26,6 +26,7 @@ import (
 
 	"github.com/PraveenGongada/catalyst/internal/config"
 	"github.com/PraveenGongada/catalyst/internal/constants"
+	"github.com/PraveenGongada/catalyst/internal/util"
 )
 
 type OutputFormat struct {
@@ -37,10 +38,17 @@ var inputPlaceholderPattern = regexp.MustCompile(constants.RegexInputPlaceholder
 func ExtractWorkflowMatrices(
 	cfg *config.Config,
 	workflowKey string,
+	appsFilter string,
 ) ([]map[string]interface{}, error) {
 	var matrices []map[string]interface{}
 
-	for _, appConfig := range cfg.Matrix {
+	allowedApps := util.ParseAllowedApps(appsFilter)
+
+	for appName, appConfig := range cfg.Matrix {
+		if !util.IsAppAllowed(appName, allowedApps) {
+			continue
+		}
+
 		for _, platformConfig := range appConfig {
 			for _, envConfig := range platformConfig {
 				if envConfig.Workflow == workflowKey {

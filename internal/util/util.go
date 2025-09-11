@@ -17,6 +17,8 @@
 package util
 
 import (
+	"strings"
+
 	"github.com/charmbracelet/bubbles/key"
 
 	"github.com/PraveenGongada/catalyst/internal/types"
@@ -40,6 +42,35 @@ func HasSelection(items []types.SelectableItem) bool {
 		}
 	}
 	return false
+}
+
+func NormalizeAppName(appName string) string {
+	return strings.ToLower(strings.ReplaceAll(appName, " ", ""))
+}
+
+func ParseAllowedApps(appsFilter string) map[string]bool {
+	if appsFilter == "" {
+		return nil
+	}
+
+	allowedApps := make(map[string]bool)
+	apps := strings.Split(appsFilter, ",")
+	for _, app := range apps {
+		trimmedApp := strings.TrimSpace(app)
+		if trimmedApp != "" {
+			normalizedApp := NormalizeAppName(trimmedApp)
+			allowedApps[normalizedApp] = true
+		}
+	}
+	return allowedApps
+}
+
+func IsAppAllowed(appName string, allowedApps map[string]bool) bool {
+	if allowedApps == nil {
+		return true
+	}
+	normalizedApp := NormalizeAppName(appName)
+	return allowedApps[normalizedApp]
 }
 
 func AdditionalHelpKeys() []key.Binding {
