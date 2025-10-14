@@ -19,6 +19,7 @@ package config
 import (
 	"fmt"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"regexp"
 	"strings"
@@ -53,8 +54,8 @@ type InputConfig struct {
 type PlatformConfig map[string]EnvironmentConfig
 
 type EnvironmentConfig struct {
-	Workflow string                 `yaml:"workflow"`
-	Matrix   map[string]interface{} `yaml:"matrix"`
+	Workflow string         `yaml:"workflow"`
+	Matrix   map[string]any `yaml:"matrix"`
 }
 
 func Load(path string) (*Config, error) {
@@ -64,9 +65,11 @@ func Load(path string) (*Config, error) {
 		} else {
 			path = "catalyst.yaml"
 			if _, err := os.Stat(path); os.IsNotExist(err) {
-				configDir, err := os.UserConfigDir()
-				if err == nil {
-					path = filepath.Join(configDir, "catalyst", "catalyst.yaml")
+				if gitRoot := getGitRoot(); gitRoot != "" {
+					gitRootPath := filepath.Join(gitRoot, "catalyst.yaml")
+					if _, err := os.Stat(gitRootPath); err == nil {
+						path = gitRootPath
+					}
 				}
 			}
 		}
@@ -83,6 +86,15 @@ func Load(path string) (*Config, error) {
 	}
 
 	return &config, nil
+}
+
+func getGitRoot() string {
+	cmd := exec.Command("git", "rev-parse", "--show-toplevel")
+	output, err := cmd.Output()
+	if err != nil {
+		return ""
+	}
+	return strings.TrimSpace(string(output))
 }
 
 func (c *Config) Validate() error {
