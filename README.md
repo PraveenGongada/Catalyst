@@ -42,7 +42,7 @@ Use the [setup-catalyst](https://github.com/PraveenGongada/setup-catalyst) actio
 - name: Setup Catalyst
   uses: PraveenGongada/setup-catalyst@v1
   with:
-    version: 'latest' # or specify a version like 'v1.0.0'
+    version: "latest" # or specify a version like 'v1.0.0'
 ```
 
 ### Homebrew
@@ -85,12 +85,11 @@ Catalyst looks for the configuration file in the following order:
 
 1. Path specified with the `-config` flag
 2. Path set in the `CATALYST_CONFIG` environment variable
-3. `./catalyst.yaml` in the current directory
-4. `$USER_CONFIG_DIR/catalyst/catalyst.yaml` (e.g., `~/.config/catalyst/catalyst.yaml` on Linux)
+3. `catalyst.yaml` in the current or git root directory
 
 ### Adding to Your Shell Profile
 
-Add the following to your `.zshrc`, `.bashrc`, or equivalent:
+You can optionally set the configuration path using an environment variable. Add the following to your `.zshrc`, `.bashrc`, or equivalent:
 
 ```bash
 # Set the path to your catalyst config
