@@ -24,6 +24,7 @@ import (
 	"github.com/PraveenGongada/catalyst/internal/config"
 	"github.com/PraveenGongada/catalyst/internal/github"
 	"github.com/PraveenGongada/catalyst/internal/styles"
+	"github.com/PraveenGongada/catalyst/internal/tui/tracker"
 	"github.com/PraveenGongada/catalyst/internal/types"
 )
 
@@ -147,7 +148,7 @@ func getAllModels(m *MainModel) map[types.Stage]tea.Model {
 	}
 }
 
-func Start(configPath string) error {
+func Start(configPath string, trackFlag bool) error {
 	if err := github.IsGHInstalled(); err != nil {
 		return fmt.Errorf("error: %w", err)
 	}
@@ -161,7 +162,12 @@ func Start(configPath string) error {
 		return fmt.Errorf("invalid configuration: %w", err)
 	}
 
-	mainModel := NewMainModel(cfg)
-	_, err = tea.NewProgram(mainModel, tea.WithAltScreen(), tea.WithMouseCellMotion()).Run()
+	if trackFlag {
+		trackerModel := tracker.NewWorkflowTrackerModel(cfg.GitHub.Repository)
+		_, err = tea.NewProgram(trackerModel, tea.WithAltScreen(), tea.WithMouseCellMotion()).Run()
+	} else {
+		mainModel := NewMainModel(cfg)
+		_, err = tea.NewProgram(mainModel).Run()
+	}
 	return err
 }

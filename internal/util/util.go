@@ -89,3 +89,11 @@ func AdditionalHelpKeys() []key.Binding {
 		),
 	}
 }
+
+func Sum(items []int) int {
+	sum := 0
+	for _, item := range items {
+		sum += item
+	}
+	return sum
+}

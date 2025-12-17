@@ -16,6 +16,23 @@
 
 package constants
 
+import util "github.com/PraveenGongada/catalyst/internal/util"
+
 const (
 	RegexInputPlaceholder = `{{inputs\.([^}]+)}}`
+	RunIdWidth            = 9
+	RunStatusWidth        = 12
+	RunTimeWidth          = 16
+	RunDurationWidth      = 12
+	RunUserWidth          = 22
+	RunBranchWidth        = 34
+	JobNameWidth          = 24
+	JobDurationWidth      = 12
+	JobStatusWidth        = 12
+)
+
+var (
+	RunItemsList        = []int{RunIdWidth, RunStatusWidth, RunTimeWidth, RunDurationWidth, RunUserWidth, RunBranchWidth}
+	RunItemsWidth       = util.Sum(RunItemsList)
+	RunItemsWidthFactor = len(RunItemsList) - 1 // -1 because we don't want to add padding to the first item
 )
