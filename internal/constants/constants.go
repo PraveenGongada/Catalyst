@@ -18,4 +18,37 @@ package constants
 
 const (
 	RegexInputPlaceholder = `{{inputs\.([^}]+)}}`
+	RunIdWidth            = 9
+	RunStatusWidth        = 12
+	RunTimeWidth          = 16
+	RunDurationWidth      = 12
+	RunUserWidth          = 22
+	RunBranchWidth        = 34
+	JobNameWidth          = 24
+	JobDurationWidth      = 12
+	JobStatusWidth        = 12
 )
+
+var (
+	RunItemsList = []int{
+		RunIdWidth,
+		RunStatusWidth,
+		RunTimeWidth,
+		RunDurationWidth,
+		RunUserWidth,
+		RunBranchWidth,
+	}
+	RunItemsWidth       = sum(RunItemsList)
+	RunItemsWidthFactor = len(
+		RunItemsList,
+	) - 1 // -1 because we don't want to add padding to the first item
+)
+
+func sum(items []int) int {
+	sum := 0
+	for _, item := range items {
+		sum += item
+	}
+	return sum
+}
+

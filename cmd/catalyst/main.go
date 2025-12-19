@@ -63,6 +63,12 @@ func main() {
 		"Comma-separated list of app names to filter (e.g., App1,App2). If empty, all apps are included",
 	)
 
+	trackFlag := flag.Bool(
+		"track",
+		false,
+		"Open workflow tracking to monitor GitHub Actions workflows and runs",
+	)
+
 	flag.Parse()
 
 	if *versionFlag {
@@ -78,7 +84,15 @@ func main() {
 		return
 	}
 
-	if err := tui.Start(*configPath); err != nil {
+	if *trackFlag {
+		if err := tui.Start(*configPath, true); err != nil {
+			fmt.Fprintf(os.Stderr, "Error starting workflow tracker: %v\n", err)
+			os.Exit(1)
+		}
+		return
+	}
+
+	if err := tui.Start(*configPath, false); err != nil {
 		fmt.Fprintf(os.Stderr, "Error starting Catalyst: %v\n", err)
 		os.Exit(1)
 	}
