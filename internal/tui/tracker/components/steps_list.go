@@ -32,34 +32,34 @@ func RenderStepsHeader(run *github.RunDetails) string {
 		return ""
 	}
 
-	userStr := fmt.Sprintf("%s", run.Actor.Login)
-	userStyled := styles.MetadataDim.Render(userStr)
+	userStyled := styles.MetadataDim.Render(run.Actor.Login)
 
 	commitHash := run.HeadSHA
 	if len(commitHash) > 7 {
 		commitHash = commitHash[:7]
 	}
-	commitStr := fmt.Sprintf("%s", commitHash)
-	commitStyled := styles.MetadataDim.Render(commitStr)
+	commitStyled := styles.MetadataDim.Render("⌁ " + commitHash)
 
-	branchStr := fmt.Sprintf(" %s", run.HeadBranch)
-	branchStyled := styles.MetadataDim.Render(branchStr)
+	branchStyled := styles.MetadataDim.Render(" " + run.HeadBranch)
 
-	statusText := styles.GetStatusText(string(run.Status), string(run.Conclusion))
+	statusText := styles.GetStatusText(
+		string(run.Status),
+		string(run.Conclusion),
+	)
+
 	durationStr := helpers.FormatDuration(run.RunStartedAt, run.UpdatedAt)
-	durationStyled := styles.MetadataDim.Render(fmt.Sprintf("⏱ %s", durationStr))
+	durationStyled := styles.MetadataDim.Render("⏱ " + durationStr)
 
 	header := lipgloss.JoinHorizontal(
 		lipgloss.Left,
-		" ",
 		userStyled,
-		"  ",
-		commitStyled,
-		"  ",
+		"   ",
 		branchStyled,
-		"  ",
+		"   ",
+		commitStyled,
+		"   ",
 		statusText,
-		"  ",
+		"   ",
 		durationStyled,
 	)
 

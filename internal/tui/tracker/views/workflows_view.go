@@ -146,10 +146,10 @@ func RenderWorkflowsView(
 	var footer string
 	if filterFocused {
 		searchText := "🔍 Search: " + filterQuery
-		footer = styles.FooterStyle.Render(searchText)
+		footer = styles.ActionFooterStyle.Render(searchText)
 	} else if jumpFocused {
 		jumpText := "Go to page: " + jumpQuery
-		footer = styles.FooterStyle.Render(jumpText)
+		footer = styles.ActionFooterStyle.Render(jumpText)
 	} else {
 		footer = renderHelpBar(false, focusPane == 0, rightPaneWidth+leftPaneWidth)
 	}
