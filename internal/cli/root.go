@@ -82,7 +82,7 @@ func newVersionCmd() *cobra.Command {
 	return &cobra.Command{
 		Use:   "version",
 		Short: "Print version information",
-		Run: func(cmd *cobra.Command, _ []string) {
+		Run: func(_ *cobra.Command, _ []string) {
 			fmt.Printf(
 				"Catalyst %s (commit: %s, built: %s)\n",
 				buildVersion,
@@ -110,6 +110,11 @@ func skipConfigLoad(cmd *cobra.Command) bool {
 
 func rewriteLegacyArgs() {
 	if len(os.Args) < 2 {
+		return
+	}
+
+	if os.Args[1] == "-help" {
+		os.Args[1] = "--help"
 		return
 	}
 	norm := func(s string) string {
