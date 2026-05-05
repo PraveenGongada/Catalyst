@@ -97,7 +97,7 @@ func newAuthedClient(opts ...ota.Option) (*ota.Client, error) {
 	if tok.BaseURL == "" || tok.Organisation == "" {
 		return nil, fmt.Errorf("cached token is missing base_url/organisation; re-run `catalyst ota login`")
 	}
-	reauth := ota.WithReAuth(func(ctx context.Context) (string, error) {
+	reauth := ota.WithReAuth(func(_ context.Context) (string, error) {
 		if path, pathErr := tokenFilePath(); pathErr == nil {
 			_ = os.Remove(path)
 		}
