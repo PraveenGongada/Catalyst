@@ -25,6 +25,7 @@ Catalyst is an elegant terminal UI tool that simplifies triggering GitHub Action
 - 🔄 Trigger GitHub Actions workflows with complex matrix configurations
 - 🔧 Extract matrix configurations for external use (GitHub UI, CI/CD automation)
 - 🌐 Maintain consistent configurations across different trigger methods
+- 📤 Push React Native bundles to an Airborne OTA server straight from your matrix config
 
 ## 📦 Installation
 
@@ -133,6 +134,7 @@ matrix:
         matrix:
           bundle_id: "com.example.myapp"
           version: "{{inputs.version}}"
+          ota_namespace: "myapp_ios" # optional, used by `catalyst ota`
 ```
 
 ## 🚀 Usage
@@ -178,6 +180,21 @@ catalyst -config /path/to/config.yaml -extract ios_prod
 ```
 
 This approach ensures that whether you use Catalyst's TUI, the extraction feature, or any other method, your deployments remain consistent and follow the same configuration patterns defined in your `catalyst.yaml` file.
+
+### OTA Push (Airborne)
+
+If you ship React Native apps and use [Airborne](https://github.com/juspay/airborne) for OTA updates, Catalyst can also fan out a bundle push across the same matrix you use for native builds. Add an `ota_namespace` to whichever matrix entries you want to push, then in CI:
+
+```bash
+# Emit only the entries that have an ota_namespace, as JSON for matrix.include
+catalyst ota matrices --platform both --env Production
+
+# Per matrix entry: log in once, then push the prebuilt bundle
+catalyst ota login --base-url "$AIRBORNE_BASE_URL" --organisation "$AIRBORNE_ORG"
+catalyst ota push --namespace "$NS" --platform ios --tag "$TAG" --bundle main.jsbundle
+```
+
+See `catalyst ota --help` for the full surface (`login`, `push`, `latest-tag`, `matrices`).
 
 ## 📋 GitHub Actions Workflow Setup
 

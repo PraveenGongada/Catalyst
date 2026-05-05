@@ -49,17 +49,16 @@ func NormalizeAppName(appName string) string {
 }
 
 func ParseAllowedApps(appsFilter string) map[string]bool {
-	if appsFilter == "" {
+	trimmed := strings.TrimSpace(appsFilter)
+	if trimmed == "" || strings.EqualFold(trimmed, "all") {
 		return nil
 	}
 
 	allowedApps := make(map[string]bool)
-	apps := strings.Split(appsFilter, ",")
-	for _, app := range apps {
+	for _, app := range strings.Split(trimmed, ",") {
 		trimmedApp := strings.TrimSpace(app)
 		if trimmedApp != "" {
-			normalizedApp := NormalizeAppName(trimmedApp)
-			allowedApps[normalizedApp] = true
+			allowedApps[NormalizeAppName(trimmedApp)] = true
 		}
 	}
 	return allowedApps

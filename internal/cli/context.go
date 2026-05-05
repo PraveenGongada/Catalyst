@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Praveen Kumar
+ * Copyright 2026 Praveen Kumar
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,16 +14,25 @@
  * limitations under the License.
  */
 
-package main
+package cli
 
-import "github.com/PraveenGongada/catalyst/internal/cli"
+import (
+	"context"
 
-var (
-	Version   = "dev"
-	Commit    = "none"
-	BuildDate = "unknown"
+	"github.com/PraveenGongada/catalyst/internal/config"
 )
 
-func main() {
-	cli.Execute(Version, Commit, BuildDate)
+type ctxKey int
+
+const (
+	ctxKeyConfig ctxKey = iota
+)
+
+func WithConfig(ctx context.Context, cfg *config.Config) context.Context {
+	return context.WithValue(ctx, ctxKeyConfig, cfg)
+}
+
+func ConfigFromContext(ctx context.Context) *config.Config {
+	cfg, _ := ctx.Value(ctxKeyConfig).(*config.Config)
+	return cfg
 }

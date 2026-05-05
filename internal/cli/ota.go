@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Praveen Kumar
+ * Copyright 2026 Praveen Kumar
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,16 +14,17 @@
  * limitations under the License.
  */
 
-package main
+package cli
 
-import "github.com/PraveenGongada/catalyst/internal/cli"
+import "github.com/spf13/cobra"
 
-var (
-	Version   = "dev"
-	Commit    = "none"
-	BuildDate = "unknown"
-)
+const defaultOTAEnvironment = "Production"
 
-func main() {
-	cli.Execute(Version, Commit, BuildDate)
+func newOtaCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "ota",
+		Short: "OTA operations",
+	}
+	cmd.AddCommand(newOtaPushCmd(), newOtaLatestTagCmd(), newOtaMatricesCmd(), newOtaLoginCmd())
+	return cmd
 }

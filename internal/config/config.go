@@ -211,6 +211,44 @@ func (c *Config) GetEnvironments(apps []string, platforms []string) []string {
 
 var variablePattern = regexp.MustCompile(constants.RegexInputPlaceholder)
 
+// Variant and platform lookups are case-insensitive; environment is case-sensitive.
+func (c *Config) OTANamespace(variant, platform, environment string) string {
+	appCfg, ok := lookupCI(c.Matrix, variant)
+	if !ok {
+		return ""
+	}
+	platCfg, ok := lookupCI(appCfg, platform)
+	if !ok {
+		return ""
+	}
+	envCfg, ok := platCfg[environment]
+	if !ok {
+		return ""
+	}
+	raw, ok := envCfg.Matrix["ota_namespace"]
+	if !ok {
+		return ""
+	}
+	if s, ok := raw.(string); ok {
+		return s
+	}
+	return fmt.Sprintf("%v", raw)
+}
+
+func lookupCI[V any](m map[string]V, key string) (V, bool) {
+	if v, ok := m[key]; ok {
+		return v, true
+	}
+	lk := strings.ToLower(key)
+	for k, v := range m {
+		if strings.ToLower(k) == lk {
+			return v, true
+		}
+	}
+	var zero V
+	return zero, false
+}
+
 func (c *Config) SubstituteVariables(value string, inputValues map[string]string) string {
 	return variablePattern.ReplaceAllStringFunc(value, func(match string) string {
 		matches := variablePattern.FindStringSubmatch(match)
